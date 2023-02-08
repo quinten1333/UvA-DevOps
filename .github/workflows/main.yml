@@ -1,8 +1,8 @@
 name: Builb Test and push
 on: [push]
 env:
-  IMAGE_NAME: student_service
-  REPO_NAME:
+  IMAGE_NAME: uva_devops_wk1
+  REPO_NAME: amicopo
 
 
 jobs:
