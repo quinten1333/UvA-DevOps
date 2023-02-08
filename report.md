@@ -149,6 +149,9 @@ The schema for the components are defined using the documentation on https://swa
 ## Add delete method
 The delete method is made by duplicating the get method and updating the description and naming to delete instead of the wording get and create.
 
+# Development environment
+For developing I have created a `Dockerfile-dev` and matching `docker-compose.yml` which runs the application within docker with hot reloading. This is done by linking the directory as a volume in docker and by utilising `nodemon` an application which reloads the applications on changes. To run nodemon, nodejs and npm need to be installed which is why a separate Dockerfile is necessary.
+
 # MongoDB Integration
 First a library has to be found to connect to MongoDB. I chose to use `pymongo` for this because it is used often and is well documented.
 
