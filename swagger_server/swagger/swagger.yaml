@@ -110,7 +110,7 @@ components:
         gradeRecords:
           type: array
           items:
-            type: number
+            $ref: '#/components/schemas/GradeRecord'
       example:
         first_name: Quinten
         last_name: Coltof
