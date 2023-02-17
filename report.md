@@ -110,7 +110,7 @@ components:
         gradeRecords:
           type: array
           items:
-            type: number
+            $ref: '#/components/schemas/GradeRecord'
       example:
         first_name: Quinten
         last_name: Coltof
@@ -159,5 +159,23 @@ Then the MONGO_URI environment variable has to be extracted and a connection mad
 
 Once there is a connection the functions have to be modified to query, insert and delete the records properly into MongoDB instead of TinyDB. After this the implementation is done. So only the service file has to be edited for this change.
 
+# Github Actions
+The original line to run the docker container in GitHub actions makes no sense: `docker run -d -e 8080:8080 -host=172.17.0.2 $REPO_NAME/$IMAGE_NAME:latest`
+I'm fairly certain this is intended so I will give my feedback in a direct manner below.
+
+`-e` sets the environment which is not wat you are trying to do, you are trying to port forward a container port to a host port. This is done using `-p`.
+
+`-host` also does not exist, at least not on my docker version (20.10.23). If the `-host` parameter actually were to set the docker container ip address then no port forwarding would be needed.
+
+The tests did not connect to the docker container so I updated the base url in the environent.json to use localhost:8080, making use of the port forwarding.
+
+After this I needed to add the MongoDB container and supply the MONGO_URI environment variable to the flask server so it tries to connect to the correct uri. This yielded the following working result, with -host left in because it may do something on your side.
+
+```
+docker run -d -p 27017:27017 -host=172.17.0.2  mongo:4 && \
+docker run -d -p 8080:8080 -host=172.17.0.2 --env MONGO_URI=mongodb://172.17.0.2:27017 $REPO_NAME/$IMAGE_NAME:latest && \
+  docker ps && sleep 5
+```
+
 # Question 1
-Alpine images have the [alpine system](https://hub.docker.com/_/alpine) as the base layer which is extremely small. Quoting from their documentation ``The image is only 5 MB in size and has access to a package repository that is much more complete than other BusyBox based images''. Due to this it is good practice to develop from a ubuntu base image for example and then build using alpine as base image for production.
+Alpine images have the [alpine system](https://hub.docker.com/_/alpine) as the base layer which is extremely small. Quoting from their documentation ``The image is only 5 MB in size and has access to a package repository that is much more complete than other BusyBox based images''. Due to this it is good practice to develop from a ubuntu base image for example and then build using alpine as base image for production. Developing on a non-alpine image could improve development speed because it has more tools installed and it is easier to install additional software which is only for development, alpine does not come with bash for example.
