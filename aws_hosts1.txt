@@ -1,0 +1,8 @@
+[aws]
+192.168.122.172
+192.168.122.183
+
+[aws:vars]
+ansible_ssh_user=ubuntu
+ansible_ssh_private_key_file=/home/ubuntu/lab_user.pem
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
